@@ -1,7 +1,7 @@
 package ru.netology.repository;
 
+import ru.netology.exception.NotFoundException;
 import ru.netology.model.Post;
-import ru.netology.model.Storage;
 
 import java.io.*;
 import java.util.*;
@@ -13,9 +13,11 @@ public class PostRepository {
 
     public PostRepository() {
         posts = new ConcurrentHashMap<>();
+        // можно при создании также указать в отдельное поле адрес сохранения
+        // тогда эта инициализация добавляется в MainServlet.init()
 
         try (ObjectInputStream stateReader = new ObjectInputStream(new FileInputStream("STORAGE"))) {
-            Storage storage = (Storage) stateReader.readObject();
+            PostStorage storage = (PostStorage) stateReader.readObject();
             for (Post post : storage.getPosts())
                 posts.put(post.getId(), post);
 
@@ -25,9 +27,9 @@ public class PostRepository {
         }
     }
 
-    public void saveToStorage() {
+    public void store() {
         try (ObjectOutputStream store = new ObjectOutputStream(new FileOutputStream("STORAGE"))) {
-            store.writeObject(all());
+            store.writeObject(new PostStorage(all()));
         } catch (IOException e) {
             System.out.println("Данные в STORAGE не сохранены по той или иной причине.");
             e.printStackTrace();
@@ -36,7 +38,7 @@ public class PostRepository {
 
 
     public List<Post> all() {
-        ArrayList<Post> postList = new ArrayList<>();
+        List<Post> postList = new ArrayList<>();
         for (Map.Entry<Long, Post> entry : posts.entrySet())
             postList.add(entry.getValue());
         return postList;
@@ -47,10 +49,21 @@ public class PostRepository {
     }
 
     public Post save(Post post) {
+        if (post.getId() == 0) {
+            var newId = (long) posts.size() + 1;
+            while (posts.containsKey(newId)) newId++;
+            posts.put(newId, post);
+        } else {
+            // как клиент вообще может послать POST-запрос на отсутствующий пост?
+            // если он ранее его удалил, то пусть такое сохранение отменит удаление
+            posts.put(post.getId(), post);
+        }
         return post;
     }
 
     public void removeById(long id) {
-
+        if (!posts.containsKey(id))
+            throw new NotFoundException("Пост не найден.");
+        posts.remove(id);
     }
 }

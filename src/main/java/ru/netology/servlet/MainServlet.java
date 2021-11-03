@@ -38,6 +38,7 @@ public class MainServlet extends HttpServlet {
             }
 
             if (method.equals("GET") && path.matches("/api/posts/\\d+")) {
+                if (postId < 0) throw new IllegalArgumentException("Некорректный номер поста");
                 // easy way
                 controller.getById(postId, resp);
                 return;
@@ -50,6 +51,7 @@ public class MainServlet extends HttpServlet {
 
             if (method.equals("DELETE") && path.matches("/api/posts/\\d+")) {
                 // easy way
+                if (postId < 0) throw new IllegalArgumentException("Некорректный номер поста");
                 controller.removeById(postId, resp);
                 return;
             }
