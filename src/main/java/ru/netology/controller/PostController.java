@@ -11,7 +11,7 @@ import java.io.Reader;
 /**
  * Предоставляет методы, соответствующие функционалу сервера,
  * осуществляет трансформацию представления данных между форматом запроса
- * и форматом хранения-обработки, а также записывает данные в ответ.
+ * и форматом хранения-обработки и записывает данные в ответ.
  */
 public class PostController {
     public static final String APPLICATION_JSON = "application/json";
@@ -30,7 +30,7 @@ public class PostController {
 
     /**
      * Записывает в ответ список постов, полученный от сервиса.
-     * @param response ответ, в который будет записан список постов.
+     * @param response ответ, в который будет записан список всех доступных постов.
      * @throws IOException  при проблемах со связью.
      */
     public void all(HttpServletResponse response) throws IOException {
@@ -40,7 +40,7 @@ public class PostController {
     }
 
     /**
-     * Записывает в ответ пост с запрошенным номером, получив его от сервиса.
+     * Записывает в ответ пост с запрошенным номером, получив его от сервиса (если не будет прервано исключением).
      * @param id       запрашиваемый номер поста.
      * @param response ответ, в который будет записан найденный пост.
      * @throws IOException при проблемах со связью.
@@ -56,7 +56,7 @@ public class PostController {
      * в сохранённом виде и записывает в ответ.
      * @param body     входной поток, трактуемый как тело поста.
      * @param response ответ, в который будет записан сохранённый пост.
-     * @throws IOException при проблемх со связью.
+     * @throws IOException при проблемах со связью.
      */
     public void save(Reader body, HttpServletResponse response) throws IOException {
         response.setContentType(APPLICATION_JSON);
