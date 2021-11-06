@@ -9,9 +9,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Осуществляет диспетчеризацию запросов.
+ */
 public class MainServlet extends HttpServlet {
+    public static final String GET = "GET";
+    public static final String POST = "POST";
+    public static final String DELETE = "DELETE";
     private PostController controller;
 
+    /**
+     * Инициализует слои.
+     */
     @Override
     public void init() {
         final var repository = new PostRepository();
@@ -19,6 +28,11 @@ public class MainServlet extends HttpServlet {
         controller = new PostController(service);
     }
 
+    /**
+     * Осуществляет обработку запроса и переводит его в команду для контроллера.
+     * @param req  запрос, который обрабатывается.
+     * @param resp ответ, который будет послан.
+     */
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) {
         // разворачивались в корневой контекст
@@ -32,14 +46,15 @@ public class MainServlet extends HttpServlet {
                     postId = Long.parseLong(path.substring(path.lastIndexOf("/") + 1));
                 } catch (Exception ignored) {}
             }
+
             // получение всех постов
-            if (method.equals("GET") && path.equals("/api/posts")) {
+            if (GET.equals(method) && "/api/posts".equals(path)) {
                 controller.all(resp);
                 return;
             }
 
             // получение поста по номеру
-            if (method.equals("GET") && isNumbered) {
+            if (GET.equals(method) && isNumbered) {
                 if (postId <= 0)
                     throw new NotFoundException("Невнятный номер поста.");
                 controller.getById(postId, resp );
@@ -47,13 +62,13 @@ public class MainServlet extends HttpServlet {
             }
 
             // публикация или обновление поста (номер в теле)
-            if (method.equals("POST") && path.equals("/api/posts")) {
+            if (POST.equals(method) && "/api/posts".equals(path)) {
                 controller.save(req.getReader(), resp);
                 return;
             }
 
             // удаление поста по номеру
-            if (method.equals("DELETE") && isNumbered) {
+            if (DELETE.equals(method) && isNumbered) {
                 if (postId <= 0)
                     throw new NotFoundException("Невнятный номер поста.");
                 controller.removeById(postId, resp);
