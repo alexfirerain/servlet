@@ -10,6 +10,9 @@ import java.io.Reader;
 
 public class PostController {
     public static final String APPLICATION_JSON = "application/json";
+    public static final String TEXT_PLAIN = "text/plain";
+    private static final Gson converter = new Gson();
+
     private final PostService service;
 
     public PostController(PostService service) {
@@ -19,29 +22,25 @@ public class PostController {
     public void all(HttpServletResponse response) throws IOException {
         response.setContentType(APPLICATION_JSON);
         final var data = service.all();
-        final var gson = new Gson();
-        response.getWriter().print(gson.toJson(data));
+        response.getWriter().print(converter.toJson(data));
     }
 
     public void getById(long id, HttpServletResponse response) throws IOException {
-        // TODO: deserialize request & serialize response
         response.setContentType(APPLICATION_JSON);
         final var data = service.getById(id);
-        final var gson = new Gson();
-        response.getWriter().print(gson.toJson(data));
-
+        response.getWriter().print(converter.toJson(data));
     }
 
     public void save(Reader body, HttpServletResponse response) throws IOException {
         response.setContentType(APPLICATION_JSON);
-        final var gson = new Gson();
-        final var post = gson.fromJson(body, Post.class);
+        final var post = converter.fromJson(body, Post.class);
         final var data = service.save(post);
-        response.getWriter().print(gson.toJson(data));
+        response.getWriter().print(converter.toJson(data));
     }
 
-    public void removeById(long id, HttpServletResponse response) {
-        // TODO: deserialize request & serialize response
+    public void removeById(long id, HttpServletResponse response) throws IOException {
+        response.setContentType(TEXT_PLAIN);
         service.removeById(id);
+        response.getWriter().print("OK");
     }
 }

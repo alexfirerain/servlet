@@ -16,9 +16,9 @@ public class PostRepository {
         // можно при создании также указать в отдельное поле адрес сохранения
         // тогда эта инициализация добавляется в MainServlet.init()
 
-        try (ObjectInputStream stateReader = new ObjectInputStream(new FileInputStream("STORAGE"))) {
-            PostStorage storage = (PostStorage) stateReader.readObject();
-            for (Post post : storage.getPosts())
+        try (ObjectInputStream extractor = new ObjectInputStream(new FileInputStream("STORAGE"))) {
+            PostStorage preceding = (PostStorage) extractor.readObject();
+            for (Post post : preceding.getPosts())
                 posts.put(post.getId(), post);
 
         } catch (Exception e) {
@@ -28,8 +28,8 @@ public class PostRepository {
     }
 
     public void store() {
-        try (ObjectOutputStream store = new ObjectOutputStream(new FileOutputStream("STORAGE"))) {
-            store.writeObject(new PostStorage(all()));
+        try (ObjectOutputStream conservator = new ObjectOutputStream(new FileOutputStream("STORAGE"))) {
+            conservator.writeObject(new PostStorage(all()));
         } catch (IOException e) {
             System.out.println("Данные в STORAGE не сохранены по той или иной причине.");
             e.printStackTrace();
@@ -52,6 +52,7 @@ public class PostRepository {
         if (post.getId() == 0) {
             var newId = (long) posts.size() + 1;
             while (posts.containsKey(newId)) newId++;
+            post.setId(newId);
             posts.put(newId, post);
         } else {
             // как клиент вообще может послать POST-запрос на отсутствующий пост?
