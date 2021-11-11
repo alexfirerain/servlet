@@ -1,6 +1,7 @@
 package ru.netology.controller;
 
 import com.google.gson.Gson;
+import org.springframework.stereotype.Controller;
 import ru.netology.model.Post;
 import ru.netology.service.PostService;
 
@@ -13,6 +14,7 @@ import java.io.Reader;
  * осуществляет трансформацию представления данных между форматом запроса
  * и форматом хранения-обработки и записывает данные в ответ.
  */
+@Controller
 public class PostController {
     public static final String APPLICATION_JSON = "application/json";
     public static final String TEXT_PLAIN = "text/plain";
