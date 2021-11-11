@@ -6,7 +6,7 @@
 
     <groupId>ru.netology</groupId>
     <artifactId>servlet</artifactId>
-    <version>WEB-RUN-1</version>
+    <version>DI-annotations</version>
     <packaging>war</packaging>
 
     <properties>

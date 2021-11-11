@@ -33,7 +33,7 @@ public class PostController {
     /**
      * Записывает в ответ список постов, полученный от сервиса.
      * @param response ответ, в который будет записан список всех доступных постов.
-     * @throws IOException  при проблемах со связью.
+     * @throws IOException при проблемах со связью.
      */
     public void all(HttpServletResponse response) throws IOException {
         response.setContentType(APPLICATION_JSON);
