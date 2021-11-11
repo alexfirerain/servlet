@@ -14,7 +14,8 @@ build/
 .sts4-cache
 
 ### IntelliJ IDEA ###
-.idea/
+/.idea/
+/.idea/httpRequests/
 *.iws
 *.iml
 *.ipr
@@ -47,3 +48,4 @@ captures/
 
 ### Gradle ###
 !gradle/wrapper/gradle-wrapper.jar
+
