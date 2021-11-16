@@ -1,9 +1,8 @@
 package ru.netology.servlet;
 
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ru.netology.controller.PostController;
 import ru.netology.exception.NotFoundException;
-import ru.netology.repository.PostRepository;
-import ru.netology.service.PostService;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -18,14 +17,14 @@ public class MainServlet extends HttpServlet {
     public static final String DELETE = "DELETE";
     private PostController controller;
 
+    final AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext("ru.netology");
+
     /**
      * Инициализует слои.
      */
     @Override
     public void init() {
-        final var repository = new PostRepository();
-        final var service = new PostService(repository);
-        controller = new PostController(service);
+        controller = (PostController) context.getBean("postController");
     }
 
     /**
