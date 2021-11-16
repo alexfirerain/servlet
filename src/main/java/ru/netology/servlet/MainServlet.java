@@ -29,8 +29,6 @@ public class MainServlet extends HttpServlet {
      */
     @Override
     public void init() {
-        final var repository = context.getBean(PostRepositoryImpl.class);
-        final var service = context.getBean(PostService.class);
         controller = context.getBean(PostController.class);
     }
 
